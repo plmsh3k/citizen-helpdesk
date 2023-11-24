@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen's Helpdesk Ticket System</title>
+  <style>
+    /* Add your CSS styles here */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+    }
+    .device-card {
+      border: 1px solid #b08f8f;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .device-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Citizen's Helpdesk Ticket System - Device</h1>
+
+  <div class="grid-container">
+
+    <!-- Display all devices in the first column (Board 1) -->
+    <div class="device-card">
+      <h3>Board 1</h3>
+      <% for (let i = 0; i < devices.length; i++) { %>
+        <div class="device-box">
+          <p><strong>Name:</strong> <%= devices[i].name %></p>
+          <p><strong>ID:</strong> <%= devices[i]._id || 'N/A' %></p>
+          <p><strong>Serial Number:</strong> <%= devices[i].serialNumber %></p>
+          <p><strong>Issue:</strong> <%= devices[i].issue %></p>
+        
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Display placeholder boxes for Board 2 to Board 6 -->
+    <% for (let boardNumber = 2; boardNumber <= 6; boardNumber++) { %>
+      <div class="device-card">
+        <h3>Board <%= boardNumber %></h3>
+        <div class="devicer-box">No devices yet.</div>
+      </div>
+    <% } %>
+
+  </div>
+
+</body>
+</html>

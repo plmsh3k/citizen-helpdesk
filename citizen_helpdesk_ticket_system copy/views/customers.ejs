@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen's Helpdesk Ticket System</title>
+  <style>
+    /* Add your CSS styles here */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+    }
+    .customer-card {
+      border: 1px solid #b08f8f;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .customer-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Citizen's Helpdesk Ticket System - Customer</h1>
+
+  <div class="grid-container">
+
+    <!-- Display all customers in the first column (Board 1) -->
+    <div class="customer-card">
+      <h3>Board 1</h3>
+      <% if (customers && customers.length > 0) { %>
+        <% for (let i = 0; i < customers.length; i++) { %>
+          <div class="customer-box">
+            <p><strong>Name:</strong> <%= customers[i].name ? customers[i].name.first + ' ' + customers[i].name.last : 'N/A' %></p>
+            <p><strong>ID:</strong> <%= customers[i]._id || 'N/A' %></p>
+            <p><strong>Phone Number:</strong> <%= customers[i].phoneNumber || 'N/A' %></p>
+            <p><strong>Email:</strong> <%= customers[i].email || 'N/A' %></p>
+          </div>
+        <% } %>
+      <% } else { %>
+        <p>No customers found.</p>
+      <% } %>
+    </div>
+
+    <!-- Display placeholder boxes for Board 2 to Board 6 -->
+    <% for (let boardNumber = 2; boardNumber <= 6; boardNumber++) { %>
+      <div class="customer-card">
+        <h3>Board <%= boardNumber %></h3>
+        <div class="customer-box">No customers yet.</div>
+      </div>
+    <% } %>
+
+  </div>
+
+</body>
+</html>
