@@ -28,46 +28,43 @@ const saveCustomer = async (pool, req, res, next) => {
     return;
   }
 
-  
+  const { firstName, lastName, email, phoneNumber } = req.body;
 
-const { firstName, lastName, email, phoneNumber } = req.body;
-
-const newCustomerData = {
+  const newCustomerData = {
     name: {
       first: firstName,
       last: lastName
     },
     email,
     phoneNumber
-};
+  };
 
-const connection = await pool.getConnection();
-try {
+  const connection = await pool.getConnection();
+  try {
     const [result] = await connection.query(
       'INSERT INTO customers (first_name, last_name, email, phone_number) VALUES (?, ?, ?, ?)',
       [newCustomerData.name.first, newCustomerData.name.last, newCustomerData.email, newCustomerData.phoneNumber]
     );
 
-    // Assuming the ID field is auto-incremented, you can access the new ID like this:
     const newCustomerId = result.insertId;
 
-    // Use the newCustomerId as needed
+    // Save the customer ID in session
+    req.session.customerId = newCustomerId;
 
     res.render("deviceinfo");
-} catch (error) {
+  } catch (error) {
     console.error(error);
 
     if (error.name === 'ER_DUP_ENTRY') {
-      // Handle duplicate entry error
       res.render("contact", { validationErrors: ["Email must be unique"] });
     } else {
       res.status(500).send('Server Error');
     }
 
     next(error);
-} finally {
+  } finally {
     connection.release();
-}
+  }
 };
 
 module.exports = { 

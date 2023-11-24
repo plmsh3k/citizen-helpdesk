@@ -9,12 +9,12 @@ const getAllDevices = async (pool) => {
       name: device.name,
       serialNumber: device.serial_number,
       issue: device.issue,
+      customerId: device.customer_id
     }));
   } finally {
     connection.release();
   }
 };
-
 
 const getSubscriptionPage = (req, res) => {
   res.render("deviceinfo");
@@ -37,21 +37,17 @@ const saveDevice = async (pool, req, res, next) => {
   const connection = await pool.getConnection();
   try {
     const [result] = await connection.query(
-      'INSERT INTO devices (name, serial_number, issue) VALUES (?, ?, ?)',
-      [newDeviceData.name, newDeviceData.serialNumber, newDeviceData.issue]
+      'INSERT INTO devices (name, serial_number, issue, customer_id) VALUES (?, ?, ?, ?)',
+      [newDeviceData.name, newDeviceData.serialNumber, newDeviceData.issue, req.session.customerId]
     );
 
-    // Assuming the ID field is auto-incremented, you can access the new ID like this:
     const newDeviceId = result.insertId;
-
-    // Use the newDeviceId as needed
 
     res.render("thanks");
   } catch (error) {
     console.error(error);
 
     if (error.name === 'ER_DUP_ENTRY') {
-      // Handle duplicate entry error
       res.render("deviceinfo", { validationErrors: ["Serial number must be unique"] });
     } else {
       res.status(500).send('Server Error');

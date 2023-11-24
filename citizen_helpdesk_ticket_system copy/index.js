@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 const mysql = require('mysql2/promise'); // Use mysql2 library
 
 const customersController = require('./controllers/customersController');
@@ -10,6 +11,13 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Set up express-session middleware
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+}));
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -17,7 +25,7 @@ app.set('views', path.join(__dirname, 'views'));
 const dbConfig = {
   host: 'localhost',
   user: 'root',
-  password: 'Aug-2023-5789',
+  password: 'root',
   database: 'ticket_db',
 };
 
@@ -37,7 +45,7 @@ pool.getConnection()
 app.get('/customers', async (req, res) => {
   try {
     const customers = await customersController.getAllCustomers(pool);
-    res.render('customers', { customers: customers });
+    res.render('customers', { customers: customers, session: req.session });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server Error');
@@ -47,7 +55,7 @@ app.get('/customers', async (req, res) => {
 app.get('/devices', async (req, res) => {
   try {
     const devices = await devicesController.getAllDevices(pool);
-    res.render('devices', { devices: devices });
+    res.render('devices', { devices: devices, session: req.session });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server Error');
@@ -62,7 +70,7 @@ app.post("/deviceInfo", async (req, res, next) => {
       console.error(error);
       res.status(500).send('Server Error');
   }
-});;
+});
 
 // Update the deviceInfo route to render the deviceinfo.ejs page
 app.get("/deviceInfo", devicesController.getSubscriptionPage);
@@ -74,10 +82,11 @@ app.post("/addData", async (req, res, next) => {
       console.error(error);
       res.status(500).send('Server Error');
   }
-});;
+});
+
+// Render the thanks.ejs page here
 app.post("/addData", (req, res) => {
-  // Render the thanks.ejs page here
-  res.render("thanks");
+  res.render("thanks", { session: req.session });
 });
 
 const PORT = 3000;
